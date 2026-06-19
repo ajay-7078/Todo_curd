@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todo App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-zinc-900 min-h-screen p-10">
+
+<div class="max-w-3xl mx-auto">
+
+    <h1 class="text-4xl text-white mb-8 font-bold">
+        Todo CRUD App
+    </h1>
+
+    <form action="/create" method="POST" class="flex gap-3 mb-8">
+        <input
+            type="text"
+            name="task"
+            placeholder="Enter Task"
+            class="flex-1 px-4 py-3 rounded bg-zinc-800 text-white"
+        >
+
+        <button
+            class="bg-blue-500 px-5 py-3 rounded text-white"
+        >
+            Add
+        </button>
+    </form>
+
+    <% todos.forEach(todo => { %>
+
+    <div class="bg-zinc-800 text-white p-4 rounded mb-3 flex justify-between items-center">
+
+        <span class="<%= todo.completed ? 'line-through text-green-400' : '' %>">
+            <%= todo.task %>
+        </span>
+
+        <div class="flex gap-2">
+
+            <a href="/toggle/<%= todo._id %>"
+                class="bg-green-500 px-3 py-1 rounded">
+                ✓
+            </a>
+
+            <a href="/edit/<%= todo._id %>"
+                class="bg-yellow-500 px-3 py-1 rounded">
+                Edit
+            </a>
+
+            <a href="/delete/<%= todo._id %>"
+                class="bg-red-500 px-3 py-1 rounded">
+                Delete
+            </a>
+
+        </div>
+
+    </div>
+
+    <% }) %>
+
+</div>
+
+</body>
+</html>
