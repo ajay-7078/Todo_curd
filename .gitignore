@@ -1,0 +1,48 @@
+# Node Modules
+node_modules/
+
+# Environment Variables
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage Directory
+coverage/
+
+# Build folders
+dist/
+build/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# Temporary files
+tmp/
+temp/
+
+# Vercel
+.vercel/
+
+# Parcel cache
+.cache/
+
+# dotenv
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

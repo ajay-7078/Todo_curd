@@ -1,44 +1,72 @@
 const Todo = require("../models/Todo");
 
-exports.getTodos = async (req, res) => {
-  const todos = await Todo.find();
-  res.render("index", { todos });
+const asyncHandler = (fn) => (req, res, next) => {
+    Promise.resolve(fn(req, res, next)).catch(next);
 };
 
-exports.createTodo = async (req, res) => {
-  await Todo.create({
-    task: req.body.task,
-  });
+exports.dashboard = asyncHandler(async (req,res)=>{
 
-  res.redirect("/");
-};
+    const todos = await Todo.find({
+        user: req.session.userId
+    }).sort({createdAt: -1});
 
-exports.editPage = async (req, res) => {
-  const todo = await Todo.findById(req.params.id);
+    res.render("index",{todos});
+});
 
-  res.render("edit", { todo });
-};
+exports.createTodo = asyncHandler(async (req,res)=>{
 
-exports.updateTodo = async (req, res) => {
-  await Todo.findByIdAndUpdate(req.params.id, {
-    task: req.body.task,
-  });
+    await Todo.create({
+        task: req.body.task,
+        user: req.session.userId
+    });
 
-  res.redirect("/");
-};
+    res.redirect("/");
+});
 
-exports.deleteTodo = async (req, res) => {
-  await Todo.findByIdAndDelete(req.params.id);
+exports.deleteTodo = asyncHandler(async (req,res)=>{
 
-  res.redirect("/");
-};
+    await Todo.findByIdAndDelete(
+        req.params.id
+    );
 
-exports.toggleStatus = async (req, res) => {
-  const todo = await Todo.findById(req.params.id);
+    res.redirect("/");
+});
 
-  await Todo.findByIdAndUpdate(req.params.id, {
-    completed: !todo.completed,
-  });
+exports.editPage = asyncHandler(async (req,res)=>{
 
-  res.redirect("/");
-};
+    const todo = await Todo.findById(
+        req.params.id
+    );
+
+    if (!todo) {
+        return res.status(404).render("error", { message: "Todo not found" });
+    }
+
+    res.render("edit",{todo});
+});
+
+exports.updateTodo = asyncHandler(async (req,res)=>{
+
+    await Todo.findByIdAndUpdate(
+        req.params.id,
+        {
+            task:req.body.task
+        }
+    );
+
+    res.redirect("/");
+});
+
+exports.toggleTodo = asyncHandler(async (req,res)=>{
+
+    const todo = await Todo.findById(req.params.id);
+    
+    if (!todo) {
+        return res.status(404).render("error", { message: "Todo not found" });
+    }
+
+    todo.completed = !todo.completed;
+    await todo.save();
+
+    res.redirect("/");
+});

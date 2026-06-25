@@ -1,25 +1,45 @@
-const express = require("express");
-const router = express.Router();
+const router = require("express").Router();
 
-const {
-  getTodos,
-  createTodo,
-  editPage,
-  updateTodo,
-  deleteTodo,
-  toggleStatus,
-} = require("../controllers/todoController");
+const auth =
+require("../middleware/auth");
 
-router.get("/", getTodos);
+const todo =
+require("../controllers/todoController");
 
-router.post("/create", createTodo);
+router.get(
+    "/dashboard",
+    auth,
+    todo.dashboard
+);
 
-router.get("/edit/:id", editPage);
+router.post(
+    "/create",
+    auth,
+    todo.createTodo
+);
 
-router.post("/update/:id", updateTodo);
+router.get(
+    "/delete/:id",
+    auth,
+    todo.deleteTodo
+);
 
-router.get("/delete/:id", deleteTodo);
+router.get(
+    "/edit/:id",
+    auth,
+    todo.editPage
+);
 
-router.get("/toggle/:id", toggleStatus);
+router.post(
+    "/update/:id",
+    auth,
+    todo.updateTodo
+);
+
+router.get(
+    "/toggle/:id",
+    auth,
+    todo.toggleTodo
+);
 
 module.exports = router;

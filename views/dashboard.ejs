@@ -1,0 +1,34 @@
+<h1>My Todos</h1>
+
+<form action="/create" method="POST">
+
+<input
+type="text"
+name="task"
+placeholder="New Task">
+
+<button>Add</button>
+
+</form>
+
+<% todos.forEach(todo=>{ %>
+
+<div>
+
+<h3><%= todo.task %></h3>
+
+<a href="/edit/<%=todo._id%>">
+Edit
+</a>
+
+<a href="/delete/<%=todo._id%>">
+Delete
+</a>
+
+</div>
+
+<% }) %>
+
+<a href="/logout">
+Logout
+</a>
