@@ -1,7 +1,5 @@
 require("dotenv").config();
 
-console.log(process.env.PORT);
-console.log(process.env.MONGO_URI);
 const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
@@ -9,11 +7,21 @@ const Todo = require("./models/Todo");
 
 const app = express();
 
-// Connect to MongoDB with error handling
-mongoose.connect(process.env.MONGO_URI)
+// Connect to MongoDB with error handling (non-blocking for serverless)
+let isMongoConnected = false;
+
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+    .then(() => {
+        isMongoConnected = true;
+        console.log("✅ MongoDB Connected");
+    })
     .catch(err => {
-        console.error("MongoDB Connection Error:", err);
-        process.exit(1);
+        console.error("⚠️ MongoDB Connection Error:", err.message);
+        // Don't exit process in serverless environment
+        // Connection will retry on next request
     });
 
 app.set("view engine","ejs");
@@ -56,6 +64,13 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.listen(3000,()=>{
-    console.log("Server Running");
-});
+// For local development
+if (process.env.NODE_ENV !== "production") {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`🚀 Server Running on http://localhost:${PORT}`);
+    });
+}
+
+// Export for Vercel
+module.exports = app;

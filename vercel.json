@@ -3,7 +3,11 @@
   "builds": [
     {
       "src": "app.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": "views/**",
+        "excludeFiles": "node_modules/**"
+      }
     }
   ],
   "routes": [
@@ -11,5 +15,9 @@
       "src": "/(.*)",
       "dest": "app.js"
     }
-  ]
+  ],
+  "env": {
+    "MONGO_URI": "@MONGO_URI",
+    "NODE_ENV": "production"
+  }
 }
